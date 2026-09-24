@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alta de Equipo de Cómputo Primario</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-light">
+
+  <div class="container-fluid p-3 p-md-4">
+    <div class="card border-0 shadow-sm rounded-3 w-100">
+      
+      <div class="card-header card-header-custom py-3 px-4">
+        Alta de Equipo de Cómputo Primario
+      </div>
+
+      <div class="card-body p-4">
+        <form id="equipoForm">
+
+          <div class="section-title mb-3">Identificación del Equipo</div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="tipoDispositivo" class="form-label">Tipo de Dispositivo *</label>
+              <select class="form-select" id="tipoDispositivo" required>
+                <option selected disabled value="">Selecciona una opción</option>
+                <option value="laptop">Laptop</option>
+                <option value="desktop">Desktop</option>
+                <option value="workstation">Workstation</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label for="numeroSerie" class="form-label">Número de Serie *</label>
+              <input type="text" class="form-control" id="numeroSerie" required>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="marca" class="form-label">Marca</label>
+              <input type="text" class="form-control" id="marca">
+            </div>
+            <div class="col-md-6">
+              <label for="modelo" class="form-label">Modelo</label>
+              <input type="text" class="form-control" id="modelo">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="usuarioAsignado" class="form-label">Usuario Asignado</label>
+            <input type="text" class="form-control" id="usuarioAsignado" placeholder="ID o Nombre del empleado">
+          </div>
+
+          <div class="section-title mb-3 pt-2">Especificaciones del Equipo</div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="ram" class="form-label">Memoria RAM (GB)</label>
+              <input type="number" class="form-control" id="ram">
+            </div>
+            <div class="col-md-6">
+              <label for="almacenamiento" class="form-label">Almacenamiento (GB)</label>
+              <input type="number" class="form-control" id="almacenamiento">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="procesador" class="form-label">Procesador</label>
+            <input type="text" class="form-control" id="procesador" placeholder="Ej. Intel Core i5-12400">
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="sistemaOperativo" class="form-label">Sistema Operativo</label>
+              <input type="text" class="form-control" id="sistemaOperativo">
+            </div>
+            <div class="col-md-6">
+              <label for="tipoLicencia" class="form-label">Tipo de Licencia</label>
+              <select class="form-select" id="tipoLicencia">
+                <option value="OEM" selected>OEM</option>
+                <option value="Retail">Retail</option>
+                <option value="Volume">Volume</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-check form-switch d-flex align-items-center gap-2 mt-4 mb-4">
+            <input class="form-check-input my-0" type="checkbox" role="switch" id="licenciaActiva" checked>
+            <label class="form-check-label section-title my-0" for="licenciaActiva">
+              ¿La licencia de SO está activa?
+            </label>
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary px-4">Guardar Equipo</button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="script.js"></script>
+</body>
+</html>
