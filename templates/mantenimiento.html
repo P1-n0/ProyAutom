@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Auditoría - TechCorp IT{% endblock %}
+{% block page_title %}Auditoría y Mantenimiento de Datos{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-3 p-4">
+  <div class="mb-3">
+    <h6 class="fw-bold m-0 text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Equipos con Expediente Incompleto</h6>
+    <small class="text-muted">Lista de activos que requieren actualización de hardware, software o periféricos.</small>
+  </div>
+  
+  <div class="table-responsive">
+    <!-- Usamos text-nowrap para que las columnas no se aplasten por tener tantos datos -->
+    <table class="table table-bordered table-hover align-middle text-nowrap">
+      <thead class="table-danger">
+        <tr>
+          <th>S/N Equipo</th>
+          <th>Responsable</th>
+          <th>Marca CPU</th>
+          <th>Procesador</th>
+          <th>RAM (GB)</th>
+          <th>ROM (GB)</th>
+          <th>OS</th>
+          <th>Licencia</th>
+          <th>Monitor (Marca)</th>
+          <th>Monitor (Pulg.)</th>
+          <th>Teclado</th>
+          <th>Mouse</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for equipo in equipos %}
+        <tr>
+          <!-- Identificación -->
+          <td class="fw-bold">{{ equipo.SN_equipo }}</td>
+          <td>{{ equipo.nombre or '<span class="badge bg-secondary">Sin Asignar</span>'|safe }} {{ equipo.apellido_paterno or '' }}</td>
+          
+          <!-- Hardware Principal -->
+          <td>{{ equipo.marca_equipo or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.procesador_equipo or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.ram_equipo or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.almacenamiento_equipo or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          
+          <!-- Software -->
+          <td>{{ equipo.SO_equipo or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.tipo_licencia or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          
+          <!-- Periféricos -->
+          <td>{{ equipo.marca_monitor or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.pulgadas_monitor or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.marca_teclado or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          <td>{{ equipo.marca_mouse or '<span class="badge bg-danger">Falta</span>'|safe }}</td>
+          
+          <!-- Botones de Acción (Reutilizados) -->
+          <td class="text-center">
+            <div class="d-flex gap-2 justify-content-center">
+              <a href="/editar/{{ equipo.SN_equipo }}" class="btn btn-sm btn-primary" title="Completar Datos">
+                <i class="bi bi-pencil-square"></i> Completar
+              </a>
+              <form action="/eliminar/{{ equipo.SN_equipo }}" method="POST" onsubmit="return confirm('¿Eliminar permanentemente el equipo {{ equipo.SN_equipo }}?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="13" class="text-center text-success py-4">
+            <i class="bi bi-check-circle-fill fs-3 d-block mb-2"></i>
+            ¡Excelente! Todos los equipos en la base de datos tienen su información completa.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Alta de Equipos - TechCorp IT{% endblock %}
+{% block page_title %}Alta de Equipos de Cómputo{% endblock %}
+
+{% block content %}
+<!-- El action apunta a la ruta de Flask y usa POST tradicional -->
+<form action="/api/equipo" method="POST" class="needs-validation">
+  
+  <!-- CAMPO OCULTO: Solo tendrá valor si estamos editando -->
+  <input type="hidden" name="original_sn" value="{{ equipo.SN_equipo if equipo else '' }}">
+
+  <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+    <div class="card-header {% if equipo %}bg-warning{% else %}bg-primary{% endif %} text-dark p-3 px-4 d-flex justify-content-between align-items-center">
+      <span class="fw-bold fs-6">
+        <i class="bi {% if equipo %}bi-pencil-square{% else %}bi-shield-check{% endif %}"></i> 
+        {% if equipo %}Edición de Activo: {{ equipo.SN_equipo }}{% else %}Registro de Nuevo Activo{% endif %}
+      </span>
+      <small class="text-dark-50">* Campos obligatorios</small>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+      <div class="mb-5">
+        <h6 class="fw-bold text-secondary text-uppercase mb-3 pb-2 border-bottom">1. Identificación Principal</h6>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Número de Serie (S/N) *</label>
+            <input type="text" name="sn_equipo" class="form-control" placeholder="Ej. MXL1234567" required 
+                   value="{{ equipo.SN_equipo if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Marca del Equipo Central</label>
+            <input type="text" name="marca_equipo" class="form-control" placeholder="Ej. Dell, HP"
+                   value="{{ equipo.marca_equipo if equipo else '' }}">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-medium">Usuario Asignado / Responsable *</label>
+            <select name="id_usuario" class="form-select" required>
+              <option disabled {% if not equipo %}selected{% endif %} value="">-- Selecciona el empleado --</option>
+              {% for usuario in usuarios %}
+                <!-- Marca como 'selected' al usuario que ya es dueño del equipo -->
+                <option value="{{ usuario.id_usuario }}" 
+                        {% if equipo and equipo.id_usuario == usuario.id_usuario %}selected{% endif %}>
+                  {{ usuario.nombre }} {{ usuario.apellido_paterno }} (Depto: {{ usuario.departamento }})
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <h6 class="fw-bold text-secondary text-uppercase mb-3 pb-2 border-bottom">2. Especificaciones y Software</h6>
+        <div class="row g-4">
+          <div class="col-md-12">
+            <label class="form-label fw-medium">Procesador / CPU</label>
+            <input type="text" name="procesador" class="form-control" placeholder="Ej. Intel Core i5"
+                   value="{{ equipo.procesador_equipo if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Memoria RAM (GB)</label>
+            <input type="number" name="ram" class="form-control" placeholder="Ej. 16"
+                   value="{{ equipo.ram_equipo if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Almacenamiento (GB)</label>
+            <input type="number" name="almacenamiento" class="form-control" placeholder="Ej. 512"
+                   value="{{ equipo.almacenamiento_equipo if equipo else '' }}">
+          </div>
+          
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Sistema Operativo</label>
+            <input type="text" name="so_equipo" class="form-control" placeholder="Ej. Windows 11"
+                   value="{{ equipo.SO_equipo if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Licencia Asignada</label>
+            <select name="id_licencia" class="form-select">
+              <option value="" {% if not equipo or not equipo.id_licencia %}selected{% endif %}>-- Sin Licencia --</option>
+              {% for licencia in licencias %}
+                <option value="{{ licencia.id_licencia }}"
+                        {% if equipo and equipo.id_licencia == licencia.id_licencia %}selected{% endif %}>
+                  {{ licencia.tipo_licencia }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h6 class="fw-bold text-secondary text-uppercase mb-3 pb-2 border-bottom">3. Periféricos Complementarios</h6>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Marca Monitor</label>
+            <input type="text" name="marca_monitor" class="form-control"
+                   value="{{ equipo.marca_monitor if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Pulgadas Monitor</label>
+            <input type="number" name="pulgadas_monitor" class="form-control"
+                   value="{{ equipo.pulgadas_monitor if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Marca Teclado</label>
+            <input type="text" name="marca_teclado" class="form-control"
+                   value="{{ equipo.marca_teclado if equipo else '' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-medium">Marca Mouse</label>
+            <input type="text" name="marca_mouse" class="form-control"
+                   value="{{ equipo.marca_mouse if equipo else '' }}">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer bg-light p-3 px-4 d-flex justify-content-between">
+      <a href="{{ url_for('inventario') }}" class="btn btn-outline-secondary">Cancelar</a>
+      <button type="submit" class="btn {% if equipo %}btn-warning{% else %}btn-primary{% endif %} px-4">
+        <i class="bi bi-floppy-fill"></i> {% if equipo %}Actualizar Equipo{% else %}Guardar y Registrar{% endif %}
+      </button>
+    </div>
+  </div>
+</form>
+{% endblock %}

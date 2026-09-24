@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Inventario - TechCorp IT{% endblock %}
+{% block page_title %}Inventario General de Activos{% endblock %}
+
+{% block content %}
+<div class="card border-0 shadow-sm rounded-3 p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h6 class="fw-bold m-0"><i class="bi bi-server text-primary"></i> Catálogo Completo de Equipos</h6>
+  </div>
+  
+  <div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+      <thead class="table-dark">
+        <tr>
+          <th>S/N</th>
+          <th>Marca</th>
+          <th>Procesador / RAM</th>
+          <th>Sistema OS / Licencia</th>
+          <th>Responsable</th>
+          <th>Departamento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for equipo in equipos %}
+        <tr>
+          <!-- Número de Serie -->
+          <td class="fw-bold">{{ equipo.SN_equipo }}</td>
+          
+          <!-- Marca (Validamos si es Nulo) -->
+          <td>{{ equipo.marca_equipo or 'Genérico / Armado' }}</td>
+          
+          <!-- Hardware -->
+          <td>
+            <div class="text-dark">{{ equipo.procesador_equipo or 'N/D' }}</div>
+            <small class="text-muted">{{ equipo.ram_equipo or '0' }} GB RAM | {{ equipo.almacenamiento_equipo or '0' }} GB ROM</small>
+          </td>
+          
+          <!-- Software y Licenciamiento dinámico -->
+          <td>
+            {{ equipo.SO_equipo or 'Sin OS' }}<br>
+            {% if equipo.tipo_licencia %}
+              <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">
+                <i class="bi bi-check-circle"></i> {{ equipo.tipo_licencia }}
+              </span>
+            {% else %}
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">
+                <i class="bi bi-x-circle"></i> Sin Licencia
+              </span>
+            {% endif %}
+          </td>
+          
+          <!-- Datos del Usuario Asignado -->
+          <td>{{ equipo.nombre }} {{ equipo.apellido_paterno }}</td>
+          
+          <!-- Departamento -->
+          <td><span class="badge bg-secondary">{{ equipo.departamento }}</span></td>
+          
+          <!-- Botones de Acción (Listos para conectar al backend en el futuro) -->
+          <td>
+            <div class="d-flex gap-2">
+                <!-- Botón Editar: Dirige a la ruta /editar pasándole el S/N -->
+                <a href="/editar/{{ equipo.SN_equipo }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                <i class="bi bi-pencil"></i>
+                </a>
+                
+                <!-- Botón Borrar: Envía un POST de borrado con confirmación -->
+                <form action="/eliminar/{{ equipo.SN_equipo }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar permanentemente el equipo {{ equipo.SN_equipo }}?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+                </form>
+            </div>
+            </td>
+        </tr>
+        {% else %}
+        <!-- Mensaje si la base de datos está vacía -->
+        <tr>
+          <td colspan="7" class="text-center text-muted py-4">
+            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+            No hay equipos registrados en el inventario.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Búsqueda - TechCorp IT{% endblock %}
+{% block page_title %}Búsqueda de Activos{% endblock %}
+
+{% block content %}
+<!-- Barra de Búsqueda -->
+<div class="card border-0 shadow-sm rounded-3 p-4 mb-4">
+  <form action="/busqueda" method="GET" class="d-flex gap-2" id="searchForm">
+    <div class="input-group input-group-lg">
+      <span class="input-group-text bg-white text-primary border-primary">
+        <i class="bi bi-search"></i>
+      </span>
+      <!-- Agregamos id="searchInput" para escucharlo con JS -->
+      <input type="text" name="q" id="searchInput" class="form-control border-primary" 
+             placeholder="Buscar por S/N, Marca, Usuario, Departamento u OS..." 
+             value="{{ query }}" autofocus autocomplete="off">
+    </div>
+  </form>
+</div>
+
+<!-- Contenedor de Resultados (Todo esto se actualizará dinámicamente) -->
+<div id="resultadosContainer">
+  <div class="card border-0 shadow-sm rounded-3 p-4">
+    <div class="mb-3">
+      {% if query %}
+        <h6 class="fw-bold m-0">Resultados para: <span class="text-primary">"{{ query }}"</span></h6>
+      {% else %}
+        <h6 class="fw-bold m-0 text-muted">Ingresa un término para comenzar la búsqueda.</h6>
+      {% endif %}
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>S/N</th>
+            <th>Marca</th>
+            <th>Hardware</th>
+            <th>Sistema OS</th>
+            <th>Responsable</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for equipo in equipos %}
+          <tr>
+            <td class="fw-bold text-primary">{{ equipo.SN_equipo }}</td>
+            <td>{{ equipo.marca_equipo or 'Genérico' }}</td>
+            <td>
+              <div class="text-dark">{{ equipo.procesador_equipo or 'N/D' }}</div>
+              <small class="text-muted">{{ equipo.ram_equipo or '0' }}GB / {{ equipo.almacenamiento_equipo or '0' }}GB</small>
+            </td>
+            <td>{{ equipo.SO_equipo or 'Sin OS' }}</td>
+            <td>{{ equipo.nombre }} {{ equipo.apellido_paterno }}</td>
+            <td><span class="badge bg-secondary">{{ equipo.departamento }}</span></td>
+            <td>
+            <div class="d-flex gap-2">
+                <!-- Botón Editar: Dirige a la ruta /editar pasándole el S/N -->
+                <a href="/editar/{{ equipo.SN_equipo }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                <i class="bi bi-pencil"></i>
+                </a>
+                
+                <!-- Botón Borrar: Envía un POST de borrado con confirmación -->
+                <form action="/eliminar/{{ equipo.SN_equipo }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar permanentemente el equipo {{ equipo.SN_equipo }}?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                    <i class="bi bi-trash"></i>
+                </button>
+                </form>
+            </div>
+            </td>
+          </tr>
+          {% else %}
+            {% if query %}
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                <i class="bi bi-search fs-2 d-block mb-2"></i>
+                No se encontraron coincidencias para "{{ query }}".
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT DE BÚSQUEDA EN VIVO (Súper ligero, sin librerías) -->
+<script>
+  let timeout = null;
+  const searchInput = document.getElementById('searchInput');
+  const resultadosContainer = document.getElementById('resultadosContainer');
+
+  searchInput.addEventListener('input', function() {
+    // 1. Limpiamos el temporizador para no saturar el servidor si escribes muy rápido
+    clearTimeout(timeout);
+    
+    // 2. Esperamos 300 milisegundos después de que dejas de teclear
+    timeout = setTimeout(() => {
+      // 3. Hacemos la consulta a la misma ruta de Flask en segundo plano
+      fetch('/busqueda?q=' + this.value)
+        .then(response => response.text())
+        .then(html => {
+          // 4. Extraemos solo el HTML nuevo y reemplazamos la tabla actual
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          resultadosContainer.innerHTML = doc.getElementById('resultadosContainer').innerHTML;
+        });
+    }, 300);
+  });
+
+  // Evitar que el formulario recargue la página si por costumbre presionan "Enter"
+  document.getElementById('searchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+  });
+</script>
+{% endblock %}

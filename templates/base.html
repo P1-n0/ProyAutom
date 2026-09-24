@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}TechCorp IT - Management{% endblock %}</title>
+  
+  <!-- Estilos Externos (Bootstrap 5 & Icons) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <!-- Estilos Personalizados del Sistema -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+
+  <div class="d-flex min-vh-100">
+
+    <!-- ================= BARRA LATERAL (SIDEBAR) ================= -->
+    <aside class="sidebar bg-dark text-white p-3 d-flex flex-column justify-content-between" style="width: 260px;">
+      <div>
+        <!-- Logo y Nombre del Sistema -->
+        <div class="d-flex align-items-center gap-3 mb-4 px-2">
+          <div class="bg-primary text-white rounded-3 p-2 d-flex align-items-center justify-content-center">
+            <i class="bi bi-pc-display fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold m-0 text-light">TechCorp IT</h6>
+            <small class="text-secondary">Asset Manager v2.4</small>
+          </div>
+        </div>
+
+        <hr class="border-secondary my-3">
+
+        <!-- Menú de Navegación Flask (Se activa la clase según active_page) -->
+        <ul class="nav nav-pills flex-column gap-1">
+          <li class="nav-item">
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if active_page == 'dashboard' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('alta_equipos') }}" class="nav-link {% if active_page == 'alta' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-plus-circle-fill"></i> Alta de Equipos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('busqueda') }}" class="nav-link {% if active_page == 'busqueda' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-search"></i> Búsqueda Avanzada
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('inventario') }}" class="nav-link {% if active_page == 'inventario' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-laptop"></i> Inventario General
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('mantenimiento') }}" class="nav-link {% if active_page == 'mantenimiento' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-tools"></i> Mantenimiento
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url_for('usuarios') }}" class="nav-link {% if active_page == 'usuarios' %}active text-white{% else %}text-secondary{% endif %} d-flex align-items-center gap-2">
+              <i class="bi bi-people"></i> Usuarios
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      
+    </aside>
+
+    <!-- ================= CONTENIDO PRINCIPAL ================= -->
+    <main class="main-content flex-grow-1 bg-body-tertiary d-flex flex-column">
+
+      <!-- Encabezado Superior -->
+      <header class="top-header bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center sticky-top">
+        <div class="d-flex align-items-center gap-3">
+          <h5 class="fw-bold m-0 text-dark">{% block page_title %}Sistema de Activos{% endblock %}</h5>
+          
+        </div>
+      </header>
+
+      <!-- Bloque dinámico de cada página -->
+      <div class="p-4 flex-grow-1">
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Componente Toast de Notificación Global -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle-fill fs-5"></i>
+          <span id="toastMessage">Operación realizada con éxito.</span>
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Global -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - TechCorp IT{% endblock %}
+{% block page_title %}Dashboard de Control{% endblock %}
+
+{% block content %}
+<!-- Tarjetas Informativas / Métricas Reales -->
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-primary border-4">
+      <small class="text-muted fw-bold">TOTAL EQUIPOS ASIGNADOS</small>
+      <h3 class="fw-bold m-0 mt-2 text-dark">{{ total_equipos }}</h3>
+      <small class="text-secondary">En la infraestructura</small>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start border-success border-4">
+      <small class="text-muted fw-bold">USUARIOS ACTIVOS</small>
+      <h3 class="fw-bold m-0 mt-2 text-dark">{{ total_usuarios }}</h3>
+      <small class="text-secondary">Empleados con hardware</small>
+    </div>
+  </div>
+  
+  <!-- TARJETA DINÁMICA: Cambia de color si hay 0 -->
+  <div class="col-md-4">
+    <div class="card border-0 shadow-sm p-3 bg-white rounded-3 border-start {% if equipos_sin_licencia_count > 0 %}border-danger{% else %}border-dark{% endif %} border-4">
+      <small class="text-muted fw-bold">SIN LICENCIA ASIGNADA</small>
+      <h3 class="fw-bold m-0 mt-2 {% if equipos_sin_licencia_count > 0 %}text-danger{% else %}text-dark{% endif %}">
+        {{ equipos_sin_licencia_count }}
+      </h3>
+      
+      <!-- Cambia el mensaje y color inferior dinámicamente -->
+      {% if equipos_sin_licencia_count > 0 %}
+        <small class="text-danger"><i class="bi bi-exclamation-triangle-fill"></i> Requieren atención</small>
+      {% else %}
+        <small class="text-muted"><i class="bi bi-check-circle-fill"></i> Todo en orden</small>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Tabla: Alertas de Licencias -->
+  <div class="col-md-7">
+    <div class="card border-0 shadow-sm rounded-3 p-4 h-100">
+      
+      <!-- TÍTULO DE TABLA DINÁMICO: Cambia ícono y color -->
+      <h6 class="fw-bold mb-3 {% if equipos_sin_licencia_count > 0 %}text-danger{% else %}text-dark{% endif %}">
+        {% if equipos_sin_licencia_count > 0 %}
+          <i class="bi bi-shield-x"></i> Equipos Pendientes de Licencia
+        {% else %}
+          <i class="bi bi-shield-check"></i> Estatus de Licenciamiento
+        {% endif %}
+      </h6>
+      
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>S/N Equipo</th>
+              <th>Sistema OS</th>
+              <th>Usuario Responsable</th>
+              <th>Departamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for equipo in equipos_sin_licencia_lista %}
+            <tr>
+              <td class="fw-bold">{{ equipo.SN_equipo }}</td>
+              <td>{{ equipo.SO_equipo or 'No especificado' }}</td>
+              <td>{{ equipo.nombre }}</td>
+              <td><span class="badge bg-secondary">{{ equipo.departamento }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="4" class="text-center text-muted py-3">
+                <i class="bi bi-check-circle fs-4 d-block mb-2 text-success"></i>
+                Todos los equipos registrados cuentan con una licencia asignada.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla: Distribución de Hardware -->
+  <div class="col-md-5">
+    <div class="card border-0 shadow-sm rounded-3 p-4 h-100">
+      <h6 class="fw-bold mb-3">Distribución por Marca</h6>
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Marca de Hardware</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for marca in equipos_por_marca %}
+          <tr>
+            <td>
+              {% if marca.marca_equipo %}
+                {{ marca.marca_equipo }}
+              {% else %}
+                <span class="text-muted fst-italic">Genérico / Armado</span>
+              {% endif %}
+            </td>
+            <td><span class="badge bg-dark-subtle text-dark">{{ marca.cantidad }} Equipos</span></td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="2" class="text-center text-muted">No hay registros.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

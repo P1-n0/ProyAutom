@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Usuarios - TechCorp IT{% endblock %}
+{% block page_title %}Directorio de Usuarios{% endblock %}
+
+{% block content %}
+<!-- ==========================================
+     1. FORMULARIO DE ALTA / EDICIÓN
+     ========================================== -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+  <div class="card-header {% if usuario_edit %}bg-warning text-dark{% else %}bg-primary text-white{% endif %} p-3 px-4">
+    <span class="fw-bold fs-6">
+      <i class="bi {% if usuario_edit %}bi-pencil-square{% else %}bi-person-plus-fill{% endif %}"></i> 
+      {% if usuario_edit %}Editar Usuario: {{ usuario_edit.nombre }}{% else %}Registrar Nuevo Usuario{% endif %}
+    </span>
+  </div>
+  
+  <div class="card-body p-4">
+    <form action="/api/usuario" method="POST" class="row g-3">
+      <!-- ID oculto para saber si estamos actualizando un registro existente -->
+      <input type="hidden" name="id_usuario_original" value="{{ usuario_edit.id_usuario if usuario_edit else '' }}">
+      
+      <div class="col-md-3">
+        <label class="form-label fw-medium">Nombre *</label>
+        <input type="text" name="nombre" class="form-control" required 
+               value="{{ usuario_edit.nombre if usuario_edit else '' }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-medium">Apellido Paterno *</label>
+        <input type="text" name="apellido_paterno" class="form-control" required 
+               value="{{ usuario_edit.apellido_paterno if usuario_edit else '' }}">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-medium">Apellido Materno *</label>
+        <input type="text" name="apellido_materno" class="form-control" required 
+               value="{{ usuario_edit.apellido_materno if usuario_edit else '' }}">
+      </div>
+      <div class="col-md-1">
+        <label class="form-label fw-medium">Edad *</label>
+        <input type="number" name="edad" class="form-control" required 
+               value="{{ usuario_edit.edad if usuario_edit else '' }}">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-medium">Departamento *</label>
+        <input type="text" name="departamento" class="form-control" placeholder="Ej. Marketing" required 
+               value="{{ usuario_edit.departamento if usuario_edit else '' }}">
+      </div>
+      
+      <div class="col-12 text-end mt-4">
+        {% if usuario_edit %}
+          <a href="{{ url_for('usuarios') }}" class="btn btn-outline-secondary me-2">Cancelar Edición</a>
+        {% endif %}
+        <button type="submit" class="btn {% if usuario_edit %}btn-warning{% else %}btn-primary{% endif %} px-4">
+          <i class="bi bi-floppy-fill"></i> {% if usuario_edit %}Actualizar Usuario{% else %}Guardar Usuario{% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==========================================
+     2. TABLA DE DIRECTORIO
+     ========================================== -->
+<div class="card border-0 shadow-sm rounded-3 p-4">
+  <h6 class="fw-bold mb-3"><i class="bi bi-people text-primary"></i> Personal y Responsables de Equipos</h6>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>Nombre Completo</th>
+          <th>Edad</th>
+          <th>Departamento</th>
+          <th>Equipos Asignados</th>
+          <th class="text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+          <td class="fw-bold text-muted">EMP-{{ usuario.id_usuario }}</td>
+          <td class="fw-bold">{{ usuario.nombre }} {{ usuario.apellido_paterno }} {{ usuario.apellido_materno }}</td>
+          <td>{{ usuario.edad }} años</td>
+          <td><span class="badge bg-secondary">{{ usuario.departamento }}</span></td>
+          <td>
+            <span class="badge {% if usuario.total_equipos > 0 %}bg-primary-subtle text-primary{% else %}bg-light text-muted{% endif %} border">
+              {{ usuario.total_equipos }} Equipos
+            </span>
+          </td>
+          <td class="text-center">
+            <div class="d-flex gap-2 justify-content-center">
+              <a href="/usuarios/editar/{{ usuario.id_usuario }}" class="btn btn-sm btn-outline-primary" title="Editar">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <!-- Botón Borrar con advertencia sobre equipos huerfanos -->
+              <form action="/eliminar_usuario/{{ usuario.id_usuario }}" method="POST" onsubmit="return confirm('¿Eliminar al usuario {{ usuario.nombre }}? \n\nNota: Si tiene equipos asignados, se recomienda reasignarlos a otra persona primero.');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6" class="text-center text-muted py-4">No hay usuarios registrados.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
