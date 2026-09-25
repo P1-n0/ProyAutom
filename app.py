@@ -113,6 +113,9 @@ def guardar_equipo():
     sn_equipo = request.form.get('sn_equipo')
     marca_equipo = request.form.get('marca_equipo')
     id_usuario = request.form.get('id_usuario')
+    id_usuario = request.form.get('id_usuario')
+    if not id_usuario or id_usuario == '0':
+        id_usuario = 0
     procesador = request.form.get('procesador')
     ram = request.form.get('ram')
     almacenamiento = request.form.get('almacenamiento')
@@ -312,4 +315,4 @@ def eliminar_usuario(id_usuario):
 if __name__ == '__main__':
     # Inicializa la base de datos antes de arrancar el servidor
     init_db()
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

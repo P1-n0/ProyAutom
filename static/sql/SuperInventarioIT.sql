@@ -34,11 +34,13 @@ CREATE TABLE IF NOT EXISTS "Stock" (
 );
 INSERT INTO "Licencia" ("id_licencia","tipo_licencia","expiracion_anios") VALUES (1,'OEM',15),
  (2,'LTSC',5);
-INSERT INTO "Usuario" ("id_usuario","nombre","apellido_paterno","apellido_materno","edad","departamento") VALUES (1,'Abdiel','Peredo','Castillo',21,'Marketing'),
- (2,'Enkyl','Renteria','Chavez',23,'RH'),
- (3,'Michel','Valerio','Moya',22,'Intendencia'),
- (4,'Josue','Chairez','Martinez',21,'Cafeteria'),
- (5,'Jesus','Pinia','Hernandez',21,'Nominas');
+INSERT INTO "Usuario" ("id_usuario", "nombre", "apellido_paterno", "apellido_materno", "edad", "departamento") VALUES 
+ (0, 'Bodega', 'General', 'TI', 0, 'Almacen TI'),
+ (1, 'Abdiel', 'Peredo', 'Castillo', 21, 'Marketing'),
+ (2, 'Enkyl', 'Renteria', 'Chavez', 23, 'RH'),
+ (3, 'Michel', 'Valerio', 'Moya', 22, 'Intendencia'),
+ (4, 'Josue', 'Chairez', 'Martinez', 21, 'Cafeteria'),
+ (5, 'Jesus', 'Pinia', 'Hernandez', 21, 'Nominas');
 INSERT INTO "Stock" ("id_stock","marca_monitor","pulgadas_monitor","marca_teclado","marca_mouse","SN_equipo","marca_equipo","ram_equipo","almacenamiento_equipo","procesador_equipo","SO_equipo","id_usuario","id_licencia") VALUES (1,'DELL',27,'HP','DELL','MX2025001',NULL,'HP',512,'i5-8500','Windows 11',1,1),
  (2,'DELL',27,'HP','DELL','MX2025002',NULL,'HP',512,'i5-8500','Windows 11',2,2),
  (3,'DELL',27,'HP','DELL','MX2025003',NULL,'HP',512,'i5-8500','Windows 11',3,1),
